@@ -1,11 +1,3 @@
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h> 
-#include <iomanip>  
-#include <fstream>
-#include <string>
-#include <cstdlib>
 #include "project3_func.h"
 
 using namespace std;
