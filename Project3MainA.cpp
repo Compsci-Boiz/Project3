@@ -4,12 +4,12 @@ using namespace std;
 
 //global constants
 enum MenuOption {
-Add = 1;
-Remove = 2;
-Display = 3;
-Search = 4;
-Results = 5;
-Quit = 6;
+Add = 1,
+Remove = 2,
+Display = 3,
+Search = 4,
+Results = 5,
+Quit = 6
 };
 
 struct Student
@@ -17,7 +17,7 @@ struct Student
 string name;
 int id;
 int numTests;
-//dynamic array for test scores(integer pointer)
+int* testScores; //dynamic array for test scores(integer pointer) // Was already declared in header file?
 float avgScore;
 };
 
@@ -100,11 +100,14 @@ cin >> Student.id;
 
 cout << "Enter number of tests taken" << endl;
 cin >> Student.numTests;
+
+student.testScores = new int[student.numTests]; // Initialized dynamic array
 	
 cout << "Enter test scores" << endl; //perhaps this should go in the for loop
-for() //to iterate through i
+for(int i = 0; i < student.numTests; ++i) //to iterate through i
 	{
-	cin >> //student test scores array
+  cout << "Score " << (i+1) << ": ";
+	cin >> student.testScores[i]; //Lowkey having a brain fart since an int pointer was already declared in the project3_func file
 		}//fuck ass mystery bracket
 	}	
 }
@@ -122,16 +125,30 @@ getNumber();
 void display()
 {
 	ifstream fin; //might need to go elsewhere
+  ofstream fout; // May be subjected to change 
 	fin.open(//some data file for reading)
 		if(fin.fail())
 		{
 		cout << "File Error" << endl;
 		exit(1)
 		}
+
+    fout.open(//Desired File Name);
+    if(fout.fail()){
+      cout << "Error: Could not create output file.";
+      exit(1);
+    }
+
+    fout << left << setw(30) << "Name:" << setw(15) << "ID:"; 
+    // Still need a second loop, and the way I allocated the spaces may be incorrect.
+    fin.close();
+    fout.close();
+
+    
 //using a second loop, display the contents of the array in the following format:
 	//allocate 30 spaces for the entire name, allocate 15 spaces for the student id, allocate 5 spaces for each test score
 	//you dont need to display the number of tests
-
+}
 	
 	
 	getNumber();
