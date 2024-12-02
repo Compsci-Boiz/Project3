@@ -1,25 +1,11 @@
-#include "project3_func.h"
-
+#include "header.h"
+#include<iostream>
+#include <fstream>
+#include <iomanip>
+#include <string>
+#include <cstdlib>
 using namespace std;
 
-//global constants
-enum MenuOption {
-Add = 1,
-Remove = 2,
-Display = 3,
-Search = 4,
-Results = 5,
-Quit = 6
-};
-
-struct Student
-{
-string name;
-int id;
-int numTests;
-int* testScores; //dynamic array for test scores(integer pointer) // Was already declared in header file?
-float avgScore;
-};
 
 int main(){
   //local variables
