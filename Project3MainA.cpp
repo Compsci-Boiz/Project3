@@ -1,9 +1,4 @@
 #include "header.h"
-#include<iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <cstdlib>
 using namespace std;
 
 
