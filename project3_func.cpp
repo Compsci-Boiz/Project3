@@ -1,8 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <cstdlib>
+#include "header.h"
 using namespace std;
 
 // Functions
