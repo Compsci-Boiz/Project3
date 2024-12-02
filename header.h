@@ -1,7 +1,11 @@
 #ifndef HEADER_H
 #define HEADER_H
 
+#include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <string>
+#include <cstdlib>
 
 // Global Constant
 const int NUM_TESTS = 5;
