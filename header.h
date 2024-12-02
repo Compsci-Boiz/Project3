@@ -1,16 +1,18 @@
 #ifndef HEADER_H
 #define HEADER_H
 
+#include <string>
+
 // Global Constant
 const int NUM_TESTS = 5;
 
 // Enum Menu Options
-enum MenuChoice {Add, Remove, Display, Search, Results, Quit};
+enum MenuChoice {Add = 1, Remove, Display, Search, Results, Quit };
 
 //Struct Definition
 struct Student
 {
-    string name;
+    std::string name;
     int studentID;
     int numTests;
     int* testScores;
