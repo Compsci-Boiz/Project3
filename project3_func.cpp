@@ -5,29 +5,6 @@
 #include <cstdlib>
 using namespace std;
 
-// Global constants
-const int NUM_TESTS = 5;
-
-enum MenuChoice { Add = 1, Remove, Display, Search, Results, Quit };
-
-// Structure definition
-struct Student 
-{
-    string name;
-    int studentID;
-    int numTests;
-    int* testScores;
-};
-
-// Function prototypes
-int getNumber();
-void add_Student();
-void remove_Student(int studentID);
-void display();
-void search(int studentID);
-void exportResults();
-int findMinimum(int* scores, int size);
-
 // Functions
 
 void add_Student() 
