@@ -5,30 +5,31 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
-#include <cstdlib>
+using namespace std;
 
 // Global Constant
 const int NUM_TESTS = 5;
 
 // Enum Menu Options
-enum MenuChoice {Add = 1, Remove, Display, Search, Results, Quit };
+enum MenuChoice { Add = 1, Remove, Display, Search, Results, Quit };
 
-//Struct Definition
+// Struct Definition
 struct Student
 {
-    std::string name;
+    string name;
     int studentID;
     int numTests;
     int* testScores;
+    float average;
 };
 
 // Function Prototypes
 int getNumber();
-void add_student();
+void add_student();                          
 void remove_student(int studentID);
 void display();
 void search(int studentID);
 void exportResults();
-int findMinimum(int* scores, int size);
+int findMinimum(const int* scores, int size);
 
 #endif // HEADER_H
