@@ -304,8 +304,7 @@ void search(int studentID)
     fin.close();
 }
 
-void exportResults() {
-    // Open the student.dat file for reading.
+ // Open the student.dat file for reading.
     std::ifstream inFile("student.dat");
     if (!inFile) {
         std::cerr << "Error opening student.dat for reading." << std::endl;
@@ -327,14 +326,30 @@ void exportResults() {
 
     // Read the student records from student.dat
     for (int i = 0; i < numStudents; ++i) {
-        inFile >> students[i].name >> students[i].studentID >> students[i].numTests;
-
-        // Dynamically allocate memory for test scores
+        std::string line;
+        std::getline(inFile, line); // Read each full line
+        
+        // Create a stringstream from the line for easier parsing
+        std::stringstream ss(line);
+        
+        // Read the name (first name and last name)
+        std::getline(ss, students[i].name, ',');
+        
+        // Read the student ID
+        ss >> students[i].studentID;
+        ss.ignore();  // Skip the comma after student ID
+        
+        // Read the number of tests
+        ss >> students[i].numTests;
+        ss.ignore();  // Skip the comma after numTests
+        
+        // Dynamically allocate memory for the test scores
         students[i].scores = new int[students[i].numTests];
-
+        
         // Read the test scores
         for (int j = 0; j < students[i].numTests; ++j) {
-            inFile >> students[i].scores[j];
+            ss >> students[i].scores[j];
+            ss.ignore();  // Skip the comma after each test score
         }
     }
 
@@ -369,7 +384,7 @@ void exportResults() {
     delete[] students;
 
     std::cout << "Results exported to file." << std::endl;
-}
+
 
 int findMinimum(const int* scores, int size) 
 {
