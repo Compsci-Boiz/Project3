@@ -1,36 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <cstdlib>
-using namespace std;
+#include "header.h"
 
-// Global constants
-const int NUM_TESTS = 5;
-
-enum MenuChoice { Add = 1, Remove, Display, Search, Results, Quit };
-
-// Structure definition
-struct Student 
-{
-    string name;
-    int studentID;
-    int numTests;
-    int* testScores;
-};
-
-// Function prototypes
-int getNumber();
-void add_Student();
-void remove_Student(int studentID);
-void display();
-void search(int studentID);
-void exportResults();
-int findMinimum(int* scores, int size);
 
 // Functions
 
-void add_Student() 
+void add_student() 
 {
     ofstream fout;
     fout.open("student.dat", ios::app);
@@ -62,7 +35,7 @@ void add_Student()
         cin >> newStudent.testScores[i];
     }
 
-    fout << newStudent.name << "," << newStudent.studentID << "," << newStudent.numTests;
+    fout << endl<< newStudent.name << "," << newStudent.studentID << "," << newStudent.numTests;
     for (int i = 0; i < newStudent.numTests; i++) 
     {
         fout << "," << newStudent.testScores[i];
@@ -73,7 +46,7 @@ void add_Student()
     fout.close();
 }
 
-void remove_Student(int studentID) 
+void remove_student(int studentID) 
 {
     ifstream fin("student.dat");
     ofstream fout("temp.dat");
@@ -124,41 +97,121 @@ void remove_Student(int studentID)
     rename("temp.dat", "student.dat");
 }
 
-void display() 
+void display()
 {
     ifstream fin("student.dat");
-    if (fin.fail()) 
+    if (fin.fail())
     {
-        cout << "File error." << endl;
+        cout << "Error: Could not open the file for reading.\n";
         return;
     }
 
     int numStudents = getNumber();
-    Student* students = new Student[numStudents];
-
-    for (int i = 0; i < numStudents; i++) 
+    if (numStudents <= 0)
     {
-        fin >> students[i].name >> students[i].studentID >> students[i].numTests;
-        students[i].testScores = new int[students[i].numTests];
-        for (int j = 0; j < students[i].numTests; j++) 
+        cout << "No student records to display.\n";
+        fin.close();
+        return;
+    }
+
+    Student* students = new Student[numStudents];
+    string line;
+
+    // Read student data
+    for (int i = 0; i < numStudents; i++)
+    {
+        if (!getline(fin, line))
         {
-            fin >> students[i].testScores[j];
+            cout << "Error: Unable to read data for student #" << (i + 1) << ".\n";
+            break;
         }
+
+        stringstream ss(line);
+        string temp;
+
+        // Parse name
+        students[i].name.clear();
+        while (getline(ss, temp, ','))
+        {
+            // Check if the current `temp` is a numeric value (student ID)
+            try
+            {
+                students[i].studentID = stoi(temp); // If this works, it's the ID
+                break; // Stop appending to the name once the ID is found
+            }
+            catch (const invalid_argument&)
+            {
+                // If it's not a number, append it to the name
+                if (!students[i].name.empty())
+                    students[i].name += ", ";
+                students[i].name += temp;
+            }
+        }
+
+        // Parse number of tests
+        if (!getline(ss, temp, ',') || temp.empty())
+        {
+            cout << "Error: Missing or invalid number of tests for student #" << (i + 1) << ".\n";
+            continue;
+        }
+        try
+        {
+            students[i].numTests = stoi(temp);
+        }
+        catch (const invalid_argument&)
+        {
+            cout << "Error: Invalid number of tests for student #" << (i + 1) << ".\n";
+            continue;
+        }
+
+        // Parse test scores
+        students[i].testScores = new int[students[i].numTests];
+        for (int j = 0; j < students[i].numTests; j++)
+        {
+            if (!getline(ss, temp, ',') || temp.empty())
+            {
+                cout << "Error: Missing or invalid test score for student #" << (i + 1) << ".\n";
+                students[i].testScores[j] = 0; // Default to 0 for missing scores
+                continue;
+            }
+            try
+            {
+                students[i].testScores[j] = stoi(temp);
+            }
+            catch (const invalid_argument&)
+            {
+                cout << "Error: Invalid test score for student #" << (i + 1) << ".\n";
+                students[i].testScores[j] = 0; // Default to 0 for invalid scores
+            }
+        }
+    }
+
+    // Display student data
+    cout << left << setw(30) << "Name"
+         << setw(15) << "Student ID"
+         << setw(5) << "Scores\n";
+    cout << string(60, '-') << endl;
+
+    for (int i = 0; i < numStudents; i++)
+    {
+        if (students[i].testScores == nullptr) continue; // Skip invalid students
 
         cout << left << setw(30) << students[i].name
              << setw(15) << students[i].studentID;
-        for (int j = 0; j < students[i].numTests; j++) 
+
+        for (int j = 0; j < students[i].numTests; j++)
         {
             cout << setw(5) << students[i].testScores[j];
         }
         cout << endl;
 
-        delete[] students[i].testScores;
+        delete[] students[i].testScores; // Free memory for test scores
     }
 
-    delete[] students;
-    fin.close();
+    delete[] students; // Free memory for student array
+    fin.close(); // Close the file
 }
+
 
 void search(int studentID) 
 {
@@ -242,7 +295,7 @@ void exportResults()
     fout.close();
 }
 
-int findMinimum(int* scores, int size) 
+int findMinimum(const int* scores, int size) 
 {
     if (size < NUM_TESTS) return 0;
 
@@ -255,4 +308,28 @@ int findMinimum(int* scores, int size)
         }
     }
     return minScore;
+}
+
+int getNumber()
+{
+	ifstream fin;
+	fin.open("student.dat");
+	if (fin.fail())
+	{
+		cout<<"File error."<<endl;
+		exit(1);
+	}
+	int count=0;
+	string line;
+	while(!fin.eof())
+	{
+		getline(fin, line);
+		++count;
+	}
+	
+	fin.close();
+	
+	cout << "Number of students = " << count << endl;
+	return(count);
+	
 }
