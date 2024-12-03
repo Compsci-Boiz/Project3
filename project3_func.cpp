@@ -1,36 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <cstdlib>
-using namespace std;
+#include "header.h"
 
-// Global constants
-const int NUM_TESTS = 5;
-
-enum MenuChoice { Add = 1, Remove, Display, Search, Results, Quit };
-
-// Structure definition
-struct Student 
-{
-    string name;
-    int studentID;
-    int numTests;
-    int* testScores;
-};
-
-// Function prototypes
-int getNumber();
-void add_Student();
-void remove_Student(int studentID);
-void display();
-void search(int studentID);
-void exportResults();
-int findMinimum(int* scores, int size);
 
 // Functions
 
-void add_Student() 
+void add_student() 
 {
     ofstream fout;
     fout.open("student.dat", ios::app);
@@ -62,7 +35,7 @@ void add_Student()
         cin >> newStudent.testScores[i];
     }
 
-    fout << newStudent.name << "," << newStudent.studentID << "," << newStudent.numTests;
+    fout << endl<< newStudent.name << "," << newStudent.studentID << "," << newStudent.numTests;
     for (int i = 0; i < newStudent.numTests; i++) 
     {
         fout << "," << newStudent.testScores[i];
@@ -73,7 +46,7 @@ void add_Student()
     fout.close();
 }
 
-void remove_Student(int studentID) 
+void remove_student(int studentID) 
 {
     ifstream fin("student.dat");
     ofstream fout("temp.dat");
@@ -242,7 +215,7 @@ void exportResults()
     fout.close();
 }
 
-int findMinimum(int* scores, int size) 
+int findMinimum(const int* scores, int size) 
 {
     if (size < NUM_TESTS) return 0;
 
@@ -255,4 +228,28 @@ int findMinimum(int* scores, int size)
         }
     }
     return minScore;
+}
+
+int getNumber()
+{
+	ifstream fin;
+	fin.open("student.dat");
+	if (fin.fail())
+	{
+		cout<<"File error."<<endl;
+		exit(1);
+	}
+	int count=0;
+	string line;
+	while(!fin.eof())
+	{
+		getline(fin, line);
+		++count;
+	}
+	
+	fin.close();
+	
+	cout << "Number of students = " << count << endl;
+	return(count);
+	
 }
