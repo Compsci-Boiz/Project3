@@ -304,43 +304,71 @@ void search(int studentID)
     fin.close();
 }
 
-void exportResults() 
-{
-    ifstream fin("student.dat");
-    ofstream fout("averages.dat");
-    if (fin.fail() || fout.fail()) 
-    {
-        cout << "File error." << endl;
+void exportResults() {
+    // Open the student.dat file for reading.
+    std::ifstream inFile("student.dat");
+    if (!inFile) {
+        std::cerr << "Error opening student.dat for reading." << std::endl;
         return;
     }
 
-    int numStudents = getNumber();
-    Student* students = new Student[numStudents];
-
-    for (int i = 0; i < numStudents; i++) 
-    {
-        fin >> students[i].name >> students[i].studentID >> students[i].numTests;
-        students[i].testScores = new int[students[i].numTests];
-        for (int j = 0; j < students[i].numTests; j++) 
-        {
-            fin >> students[i].testScores[j];
-        }
-
-        int total = 0;
-        for (int j = 0; j < students[i].numTests; j++) 
-        {
-            total += students[i].testScores[j];
-        }
-        int minScore = findMinimum(students[i].testScores, students[i].numTests);
-        float average = (students[i].numTests > 1) ? (total - minScore) / (students[i].numTests - 1) : 0;
-
-        fout << students[i].studentID << " " << fixed << setprecision(1) << average << endl;
-        delete[] students[i].testScores;
+    // Open the averages.dat file for writing.
+    std::ofstream outFile("averages.dat");
+    if (!outFile) {
+        std::cerr << "Error opening averages.dat for writing." << std::endl;
+        return;
     }
 
+    // Get the number of students from the getNumber function
+    int numStudents = getNumber();
+
+    // Create a dynamic array to store all student records
+    Student* students = new Student[numStudents];
+
+    // Read the student records from student.dat
+    for (int i = 0; i < numStudents; ++i) {
+        inFile >> students[i].name >> students[i].studentID >> students[i].numTests;
+
+        // Dynamically allocate memory for test scores
+        students[i].scores = new int[students[i].numTests];
+
+        // Read the test scores
+        for (int j = 0; j < students[i].numTests; ++j) {
+            inFile >> students[i].scores[j];
+        }
+    }
+
+    // Process each student record and calculate the average (excluding the minimum score)
+    for (int i = 0; i < numStudents; ++i) {
+        // Find the minimum score
+        int minScore = findMinimum(students[i].scores, students[i].numTests);
+
+        // Calculate the sum of the test scores, excluding the minimum score
+        int totalScore = 0;
+        for (int j = 0; j < students[i].numTests; ++j) {
+            if (students[i].scores[j] != minScore) {
+                totalScore += students[i].scores[j];
+            }
+        }
+
+        // Compute the average (rounding to one decimal point)
+        double average = static_cast<double>(totalScore) / (students[i].numTests - 1);
+        
+        // Write the student ID and the average to the averages.dat file
+        outFile << students[i].studentID << " " << std::fixed << std::setprecision(1) << average << std::endl;
+    }
+
+    // Close the files
+    inFile.close();
+    outFile.close();
+
+    // Clean up dynamically allocated memory
+    for (int i = 0; i < numStudents; ++i) {
+        delete[] students[i].scores;
+    }
     delete[] students;
-    fin.close();
-    fout.close();
+
+    std::cout << "Results exported to file." << std::endl;
 }
 
 int findMinimum(const int* scores, int size) 
